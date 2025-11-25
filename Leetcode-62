@@ -1,0 +1,59 @@
+#include <iostream>
+
+class MyCircularQueue {
+public:
+    int* arr;
+    int front;
+    int rear;
+    int count;
+    int capacity;
+
+    MyCircularQueue(int k) {
+        capacity = k;
+        arr = new int[capacity];
+        front = 0;
+        rear = 0;
+        count = 0;
+    }
+
+    bool enQueue(int val) {
+        if (isFull()) {
+            return false;
+        }
+        arr[rear] = val;
+        rear = (rear + 1) % capacity; 
+        count++;
+        return true;
+    }
+
+    bool deQueue() {
+        if (isEmpty()) {
+            return false; 
+        }
+        front = (front + 1) % capacity; 
+        count--;
+        return true;
+    }
+
+    int Front() {
+        if (isEmpty()) return -1; 
+        return arr[front];
+    }
+
+    int Rear() {
+        if (isEmpty()) return -1;
+        int last = (rear - 1 + capacity) % capacity;
+        return arr[last];
+    }
+
+    bool isEmpty() {
+        return count == 0;
+    }
+
+    bool isFull() {
+        return count == capacity;
+    }
+};
+
+//Time: O(1)
+//Space: 0(k)
