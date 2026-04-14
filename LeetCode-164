@@ -1,0 +1,38 @@
+class Solution {
+public:
+    int maximumGap(vector<int>& nums) {
+
+        int n = nums.size();
+        if (n < 2) return 0;
+
+        int min_val = min_element(nums.begin(), nums.end());
+        int max_val =max_element(nums.begin(), nums.end());
+
+        if (min_val == max_val) return 0;
+
+        int range  = max(1, (int)ceil((double)(max_val - min_val) / (n - 1)));
+        int bucket_count = (max_val - min_val) / range + 1;
+        vector<pair<int,int>> buckets(bucket_count, {INT_MAX, INT_MIN});
+
+        for (int num : nums) {
+            int idx = (num - min_val) / range; 
+            buckets[idx].first  = min(buckets[idx].first,  num);
+            buckets[idx].second = max(buckets[idx].second, num);
+        }
+
+        int max_gap  = 0;
+        int prev_max = buckets[0].second;
+
+        for (int i = 1; i < bucket_count; i++) {
+            if (buckets[i].first == INT_MAX) continue;
+
+            int current_gap = buckets[i].first - prev_max;
+            if (current_gap > max_gap)
+                max_gap = current_gap;
+
+            prev_max = buckets[i].second;
+        }
+
+        return max_gap;
+    }
+};
