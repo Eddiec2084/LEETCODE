@@ -1,0 +1,64 @@
+class Solution {
+    public int findTheCity(int n, int[][] edges, int distanceThreshold) {
+
+        // make a empty grid/map idk what to call it
+        int[][] dist = new int[n][n];
+
+        // set everything to a big number since we dont know any distances yet
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                dist[i][j] = 99999999;
+            }
+        }
+
+        // distance from a city to itself is 0
+        for (int i = 0; i < n; i++) {
+            dist[i][i] = 0;
+        }
+
+        // fill in the direct edges we already know
+        // including cities able to travel inbeetween the same direction
+        for (int[] edge : edges) {
+            int from = edge[0];
+            int to = edge[1];
+            int wt = edge[2];
+
+            dist[from][to] = wt;
+            dist[to][from] = wt;
+        }
+
+        // if going from i to j through k is shorter then update it
+        for (int k = 0; k < n; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (dist[i][k] != 99999999 && dist[k][j] != 99999999) {
+                        if (dist[i][k] + dist[k][j] < dist[i][j]) {
+                            dist[i][j] = dist[i][k] + dist[k][j];
+                        }
+                    }
+                }
+            }
+        }
+
+        // now count how many cities each city can reach within the threshold
+        int result = 0;
+        int minCount = 99999999;
+
+        for (int i = 0; i < n; i++) {
+            int count = 0;
+            for (int j = 0; j < n; j++) {
+                if (i != j && dist[i][j] <= distanceThreshold) {
+                    count++;
+                }
+            }
+
+            // going for the least reachable cities i think
+            if (count <= minCount) {
+                minCount = count;
+                result = i;
+            }
+        }
+
+        return result;
+    }
+}
